@@ -17,7 +17,7 @@ public class Server {
   // TODO 0: Read through this class and determine the shape of this project...
   // What are the endpoints that we can access... What happens if you go to them?
   public static void main(String[] args) {
-    int port = 3232;
+    int port = 3231;
     Spark.port(port);
     /*
        Setting CORS headers to allow cross-origin requests from the client; this is necessary for the client to
@@ -59,7 +59,7 @@ public class Server {
     //    // Setting up the handler for the GET /order and /activity endpoints
     //    Spark.get("order", new OrderHandler(menu));
     //    Spark.get("activity", new ActivityHandler());
-    Spark.get("variables", new CSVHandler());
+    Spark.get("loadcsv", new CSVHandler());
     Spark.init();
     Spark.awaitInitialization();
 

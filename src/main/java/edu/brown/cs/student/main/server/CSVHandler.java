@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.server;
 
+import edu.brown.cs.student.main.utils.CountyDataUtilities;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,18 +19,25 @@ public class CSVHandler implements Route {
   @Override
   public Object handle(Request request, Response response) {
     Set<String> params = request.queryParams();
-    String participants = request.queryParams("participants");
+    String participants = request.queryParams("");
+
+    for (int i = 0; i < params.size(); i++) {
+      System.out.println("Parameter (" + i + "): " + params.toArray()[i].toString());
+    }
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
     try {
       // Sends a request to the API and receives JSON back
-      String activityJson = this.sendRequest(participants);
-
-      System.out.println("Result: " + activityJson);
+      String countyJson = this.sendRequest(participants);
+      //      System.out.println("Result: " + activityJson);
       // Deserializes JSON into an Activity
-      //    Activity activity = ActivityAPIUtilities.deserializeActivity(activityJson);
+      //          Activity activity = ActivityAPIUtilities.deserializeActivity(activityJson);
+      String[] counties = CountyDataUtilities.deserializeCounty(countyJson);
 
+      for (int i = 0; i < counties.length; i++) {
+        System.out.println("County (" + i + "): " + counties[i]);
+      }
       // Adds results to the responseMap
       responseMap.put("result", "success");
       //    responseMap.put("activity", activity);
@@ -66,8 +74,8 @@ public class CSVHandler implements Route {
 
     // What's the difference between these two lines? Why do we return the body? What is useful from
     // the raw response (hint: how can we use the status of response)?
-    System.out.println(sentBoredApiResponse);
-    System.out.println(sentBoredApiResponse.body());
+    //    System.out.println(sentBoredApiResponse);
+    //    System.out.println(sentBoredApiResponse.body());
 
     return sentBoredApiResponse.body();
   }
