@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class CSVHandler implements Route {
+public class BroadbandHandler implements Route {
 
   private HashMap<String, String> StateMap;
 
@@ -25,7 +26,9 @@ public class CSVHandler implements Route {
 
     Set<String> params = request.queryParams();
     String StateID = request.queryParams("state");
+    String countyID = request.queryParams("county");
     StateID = StateID.replaceAll(" ", "").toLowerCase();
+
     System.out.println(StateID);
 
     // variables ? City = SanFran
@@ -37,21 +40,30 @@ public class CSVHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
     try {
       // Sends a request to the API and receives JSON back
-      String countyJson = this.sendRequest(StateID);
+      String countyJson = this.sendRequest(StateID, countyID);
       //      System.out.println("Result: " + activityJson);
       // Deserializes JSON into an Activity
       //          Activity activity = ActivityAPIUtilities.deserializeActivity(activityJson);
-      String[][] CountyData = CountyDataUtilities.deserializeCounty(countyJson);
 
-      for (int i = 0; i < CountyData.length; i++) {
-        for (int j = 0; j < CountyData[i].length; j++) {
-          System.out.print(CountyData[i][j] + "\t");
+      String[][] CountyData = CountyDataUtilities.deserializeCounty(countyJson);
+      int x = CountyData.length;
+      int y = CountyData[0].length;
+      String[][] SerializedData = new String[x - 1][y - 2];
+
+      // formats output data
+      for (int i = 0; i < SerializedData.length; i++) {
+        for (int j = 0; j < SerializedData[i].length; j++) {
+          SerializedData[i][j] = CountyData[i + 1][j];
         }
-        System.out.println();
       }
+
+      String JsonData = CountyDataUtilities.serializeCounty(SerializedData);
 
       // Adds results to the responseMap
       responseMap.put("result", "success");
+      responseMap.put("time retrieved", LocalTime.now());
+      responseMap.put("data", JsonData);
+
       //    responseMap.put("activity", activity);
       return responseMap;
     } catch (Exception e) {
@@ -66,7 +78,7 @@ public class CSVHandler implements Route {
     return responseMap;
   }
 
-  private String sendRequest(String stateID)
+  private String sendRequest(String stateID, String countyID)
       throws URISyntaxException, IOException, InterruptedException {
     // Build a request to this BoredAPI. Try out this link in your browser, what do you see?
     // TODO 1: Looking at the documentation, how can we add to the URI to query based
@@ -76,7 +88,9 @@ public class CSVHandler implements Route {
         HttpRequest.newBuilder()
             .uri(
                 new URI(
-                    "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:"
+                    "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:"
+                        + countyID
+                        + "&in=state:"
                         + this.StateMap.get(stateID.trim().toLowerCase())))
             .GET()
             .build();

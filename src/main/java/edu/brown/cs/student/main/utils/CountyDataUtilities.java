@@ -33,6 +33,13 @@ public class CountyDataUtilities {
       return null;
     }
   }
+
+  public static String serializeCounty(String[][] countyData) {
+    Moshi moshi = new Moshi.Builder().build();
+    JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class);
+    String data = adapter.toJson(countyData);
+    return data;
+  }
 }
 
 /*
