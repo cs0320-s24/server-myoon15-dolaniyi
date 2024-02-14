@@ -44,12 +44,35 @@ public class CSVParser<T> {
     this.searcher = new CSVSearcher(this.elts, word, this.interpretCol(col));
   }
 
-  /** Alternate constructor for testing purposes */
+  /** Alternate constructor for testing AND Server purposes */
   public CSVParser(Reader file, CreatorFromRow<T> creator) {
     this.file = file;
     this.creator = creator;
     this.elts = new ArrayList<>();
     this.parseCSV();
+  }
+
+  /** Searches CSV for Server implementation */
+  public CSVSearcher searchCSV(String word, String col) {
+    //    CSVSearcher searcher = new CSVSearcher(this.elts, word, this.interpretCol(col));
+    //
+    //    List<Coordinate> matches = searcher.returnList();
+    //    List<T> elements = getElts();
+    //    List<List<String>> mut = new ArrayList<>();
+    //
+    //    String[][] out = new String[matches.size()][2];
+    //
+    //    for (int i = 0; i < matches.size(); i+=1){
+    //
+    //      int x = matches.get(i).getRow();
+    //      int y = matches.get(i).getCol();
+    //
+    //      out[i] = elements.get(x);
+    //      out[i][1] = elements.get(y).toString();
+    //
+    //    }
+
+    return new CSVSearcher(this.elts, word, this.interpretCol(col));
   }
 
   /** Updates this.elts with CSV information */
