@@ -60,7 +60,10 @@ public class Server {
     //    Spark.get("order", new OrderHandler(menu));
     //    Spark.get("activity", new ActivityHandler());
 
+    CSVLoadHandler load = new CSVLoadHandler();
     Spark.get("broadband", new BroadbandHandler());
+    Spark.get("loadcsv", load);
+    Spark.get("viewcsv", new CSVViewHandler(load));
 
     Spark.init();
     Spark.awaitInitialization();
