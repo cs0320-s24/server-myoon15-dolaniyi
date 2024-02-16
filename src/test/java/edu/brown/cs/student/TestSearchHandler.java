@@ -1,29 +1,25 @@
 package edu.brown.cs.student;
 
-import com.squareup.moshi.JsonReader;
+import static org.testng.AssertJUnit.assertEquals;
+
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.CSVLoadHandler;
 import edu.brown.cs.student.main.server.CSVSearchHandler;
 import edu.brown.cs.student.main.server.CSVViewHandler;
+import edu.brown.cs.student.main.server.SearchSuccess;
+import edu.brown.cs.student.main.utils.SerializeUtility;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import edu.brown.cs.student.main.utils.SerializeUtility;
 import okio.Buffer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.Assert;
 import spark.Spark;
-import static spark.Spark.*;
-
-
-import static org.testng.AssertJUnit.assertEquals;
 
 public class TestSearchHandler {
   private CSVLoadHandler load = new CSVLoadHandler();
@@ -55,9 +51,7 @@ public class TestSearchHandler {
     Spark.awaitStop();
   }
 
-  /**
-   * Helper method for URLConnection
-   */
+  /** Helper method for URLConnection */
   private static HttpURLConnection tryRequest(String apiCall) throws IOException {
     // Configure the connection (but don't actually send the request yet)
     URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall);
@@ -73,46 +67,24 @@ public class TestSearchHandler {
 
   @Test
   public void testSearchWorking() throws IOException {
-    HttpURLConnection loadConnection = tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+    HttpURLConnection loadConnection =
+        tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
     // tests if successful connection
     assertEquals(200, loadConnection.getResponseCode());
     // this calls handle(...) method inside load
     loadConnection.getInputStream();
 
-
-
     HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
 
     Moshi moshi = new Moshi.Builder().build();
     SearchSuccess response =
-            moshi
-                    .adapter(SearchSuccess.class)
-                            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
-    System.out.println(response.response_type());
+        moshi
+            .adapter(SearchSuccess.class)
+            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-
-
-//    Map<String, Object> map = moshi.adapter(HashMap.class).fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
-//    System.out.println("Map Conversion: " + map);
-
-//    Map<String, Object> ret = (Map<String, Object>)searchConnection.getInputStream();
-//
-//    System.out.println("size" +ret.size());
-
-//    String[][] response = SerializeUtility.JsonToArray(new Buffer().readFrom(searchConnection.getInputStream()));
-
-//    Moshi moshi = new Moshi.Builder().build();
-//    String[][] response =
-//            moshi
-//                    .adapter(String[][].class)
-//                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
-//
-
-
-
+    System.out.println("response = " + response.responseMap().get("data"));
 
     loadConnection.disconnect();
     searchConnection.disconnect();
   }
-
 }

@@ -82,6 +82,7 @@ public class CSVParser<T> {
       String brRow;
       while ((brRow = br.readLine()) != null) {
         try {
+          brRow = brRow.replaceAll("\"", "");
           // stores the number of cols in row for index checking later
           this.numCols = Arrays.asList(brRow.split(",")).size();
           // stores header as String[] for index calculation

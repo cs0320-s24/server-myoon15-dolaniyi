@@ -28,7 +28,6 @@ public class CSVSearcher {
     // populates this.allMatches
     this.searchCSV();
 
-    this.printMatches();
   }
 
   /** Goes through CSV and adds all matches to this.allMatches as Coordinate record class */
@@ -43,7 +42,6 @@ public class CSVSearcher {
 
         // no input for col is given (search all cols)
       case -1:
-        System.out.println("Searching all columns...");
         for (int i = 0; i < this.elts.size(); i += 1) {
           String[] temp = this.elts.get(i);
           if (temp == null) continue;
@@ -58,8 +56,6 @@ public class CSVSearcher {
 
         // specific column given
       default:
-        System.out.println(
-            "Searching column: " + this.col + ", headerID: " + this.elts.get(0)[this.col]);
         for (int i = 0; i < this.elts.size(); i += 1) {
           String[] temp = this.elts.get(i);
           // skip if row is empty, or row is shorter than col we're searching

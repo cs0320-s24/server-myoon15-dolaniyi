@@ -40,6 +40,29 @@ public class SerializeUtility {
     String data = adapter.toJson(countyData);
     return data;
   }
+
+  /*
+
+    public static String[][] JsonToArray(String jsonCounty) {
+    try {
+      Moshi moshi = new Moshi.Builder().build();
+      JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class);
+      String[][] data = adapter.fromJson(jsonCounty);
+      return data;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+    public static String ArrayToJson(String[][] countyData) {
+    Moshi moshi = new Moshi.Builder().build();
+    JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class);
+    String data = adapter.toJson(countyData);
+    return data;
+  }
+
+   */
 }
 
 /*

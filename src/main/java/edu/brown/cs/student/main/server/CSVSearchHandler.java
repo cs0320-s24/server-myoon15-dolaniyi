@@ -4,6 +4,7 @@ import edu.brown.cs.student.main.search.CSVParser;
 import edu.brown.cs.student.main.search.CSVSearcher;
 import edu.brown.cs.student.main.search.Coordinate;
 import edu.brown.cs.student.main.utils.SerializeUtility;
+import edu.brown.cs.student.main.search.CSVParser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.Set;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+
+import javax.sql.rowset.serial.SerialArray;
 
 public class CSVSearchHandler implements Route {
   CSVLoadHandler loadHandler;
@@ -64,6 +67,7 @@ public class CSVSearchHandler implements Route {
     responseMap.put("result", "success");
     responseMap.put("data", JsonSerialized);
 
-    return responseMap;
+  //  return responseMap;
+    return new SearchSuccess(responseMap).serialize();
   }
 }
