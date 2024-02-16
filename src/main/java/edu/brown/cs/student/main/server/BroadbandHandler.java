@@ -39,11 +39,37 @@ public class BroadbandHandler implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
     try {
+
+      // if key in Map:
+      //    countyJason = map[key]
+      // else
+      //    Proxy.add((rhodeisland02, json))
+
+      /*
+      proxy: Hashmap main
+      returns UnmodifyableMap
+      from this handler: take unmodifymap and check if URI already accessed
+       */
+
+      /*
+      class Proxy{
+        private Hashmap data
+        private UnmodifyableMap returnable
+
+        data == returnable
+
+        public void addToMap(key value){
+          data.put(key, value)
+          unmod = data
+      }
+
+       */
+
+
       // Sends a request to the API and receives JSON back
       String countyJson = this.sendRequest(StateID, countyID);
-      //      System.out.println("Result: " + activityJson);
-      // Deserializes JSON into an Activity
-      //          Activity activity = ActivityAPIUtilities.deserializeActivity(activityJson);
+      // Map.put(parameters, countyJson);
+
 
       String[][] CountyData = CountyDataUtilities.deserializeCounty(countyJson);
       int x = CountyData.length;
