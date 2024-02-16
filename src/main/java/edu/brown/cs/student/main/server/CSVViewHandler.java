@@ -39,7 +39,7 @@ public class CSVViewHandler implements Route {
         arrayOut[i][j] = out.get(i)[j];
       }
     }
-    String JsonSerialized = SerializeUtility.serializeCounty(arrayOut);
+    String JsonSerialized = SerializeUtility.ArrayToJson(arrayOut);
     //    System.out.println("JSON = " + JsonSerialized);
     responseMap.put("result", "success");
     responseMap.put("data", JsonSerialized);

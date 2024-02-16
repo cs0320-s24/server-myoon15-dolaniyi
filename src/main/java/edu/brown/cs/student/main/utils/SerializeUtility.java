@@ -22,7 +22,7 @@ public class SerializeUtility {
   //      return "";
   //    }
   //  }
-  public static String[][] deserializeCounty(String jsonCounty) {
+  public static String[][] JsonToArray(String jsonCounty) {
     try {
       Moshi moshi = new Moshi.Builder().build();
       JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class);
@@ -34,7 +34,7 @@ public class SerializeUtility {
     }
   }
 
-  public static String serializeCounty(String[][] countyData) {
+  public static String ArrayToJson(String[][] countyData) {
     Moshi moshi = new Moshi.Builder().build();
     JsonAdapter<String[][]> adapter = moshi.adapter(String[][].class);
     String data = adapter.toJson(countyData);

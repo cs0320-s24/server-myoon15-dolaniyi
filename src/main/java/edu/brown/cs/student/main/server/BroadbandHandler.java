@@ -175,7 +175,7 @@ public class BroadbandHandler implements Route, Broadband {
 
     String serialize(String countyJson) {
 
-      String[][] CountyData = SerializeUtility.deserializeCounty(countyJson);
+      String[][] CountyData = SerializeUtility.JsonToArray(countyJson);
 
       int x = CountyData.length;
       int y = CountyData[0].length;
@@ -188,7 +188,7 @@ public class BroadbandHandler implements Route, Broadband {
         }
       }
 
-      String JsonData = SerializeUtility.serializeCounty(SerializedData);
+      String JsonData = SerializeUtility.ArrayToJson(SerializedData);
       responseMap.put("data", JsonData);
 
       return JsonData;
