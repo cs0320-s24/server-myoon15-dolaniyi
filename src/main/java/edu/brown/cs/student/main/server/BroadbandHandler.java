@@ -1,5 +1,7 @@
 package edu.brown.cs.student.main.server;
 
+import edu.brown.cs.student.main.Caching.CachedBroadband;
+import edu.brown.cs.student.main.interfaces.Broadband;
 import edu.brown.cs.student.main.utils.CountyDataUtilities;
 import java.io.IOException;
 import java.net.URI;
@@ -15,9 +17,10 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class BroadbandHandler implements Route {
+public class BroadbandHandler implements Route, Broadband {
 
   private HashMap<String, String> StateMap;
+  private CachedBroadband cache = new CachedBroadband(this);
 
   @Override
   public Object handle(Request request, Response response) {
@@ -29,12 +32,12 @@ public class BroadbandHandler implements Route {
     String countyID = request.queryParams("county");
     StateID = StateID.replaceAll(" ", "").toLowerCase();
 
-    System.out.println(StateID);
+    //    System.out.println(StateID);
 
     // variables ? City = SanFran
-    for (int i = 0; i < params.size(); i++) {
-      System.out.println("Parameter (" + i + "): " + params.toArray()[i].toString());
-    }
+    //    for (int i = 0; i < params.size(); i++) {
+    //      System.out.println("Parameter (" + i + "): " + params.toArray()[i].toString());
+    //    }
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
@@ -65,11 +68,9 @@ public class BroadbandHandler implements Route {
 
        */
 
-
       // Sends a request to the API and receives JSON back
-      String countyJson = this.sendRequest(StateID, countyID);
+      String countyJson = this.cache.search(StateID, countyID);
       // Map.put(parameters, countyJson);
-
 
       String[][] CountyData = CountyDataUtilities.deserializeCounty(countyJson);
       int x = CountyData.length;
@@ -104,7 +105,8 @@ public class BroadbandHandler implements Route {
     return responseMap;
   }
 
-  private String sendRequest(String stateID, String countyID)
+  @Override
+  public String sendRequest(String stateID, String countyID)
       throws URISyntaxException, IOException, InterruptedException {
     // Build a request to this BoredAPI. Try out this link in your browser, what do you see?
     // TODO 1: Looking at the documentation, how can we add to the URI to query based
