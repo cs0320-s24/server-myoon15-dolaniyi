@@ -27,7 +27,6 @@ public class CSVSearcher {
 
     // populates this.allMatches
     this.searchCSV();
-
   }
 
   /** Goes through CSV and adds all matches to this.allMatches as Coordinate record class */

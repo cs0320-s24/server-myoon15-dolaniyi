@@ -49,7 +49,23 @@ public class BroadbandHandler implements Route, Broadband {
       // Adds results to the responseMap
       responseMap.put("result", "success");
       responseMap.put("time retrieved", LocalTime.now());
-      // Restore[X]  responseMap.put("data", JsonData);
+
+      String[][] CountyData = SerializeUtility.JsonToArray(countyJson);
+
+      int x = CountyData.length;
+      int y = CountyData[0].length;
+      String[][] SerializedData = new String[x - 1][y - 2];
+
+      // formats output data
+      for (int i = 0; i < SerializedData.length; i++) {
+        for (int j = 0; j < SerializedData[i].length; j++) {
+          SerializedData[i][j] = CountyData[i + 1][j];
+        }
+      }
+
+      String JsonData = SerializeUtility.ArrayToJson(SerializedData);
+
+      responseMap.put("data", JsonData);
 
       return responseMap;
       // return new SuccessResponse(responseMap).serialize(countyJson);
