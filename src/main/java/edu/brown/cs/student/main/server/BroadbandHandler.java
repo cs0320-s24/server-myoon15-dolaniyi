@@ -2,7 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import edu.brown.cs.student.main.Caching.CachedBroadband;
 import edu.brown.cs.student.main.interfaces.Broadband;
-import edu.brown.cs.student.main.utils.CountyDataUtilities;
+import edu.brown.cs.student.main.utils.SerializeUtility;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,58 +41,18 @@ public class BroadbandHandler implements Route, Broadband {
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
+
     try {
-
-      // if key in Map:
-      //    countyJason = map[key]
-      // else
-      //    Proxy.add((rhodeisland02, json))
-
-      /*
-      proxy: Hashmap main
-      returns UnmodifyableMap
-      from this handler: take unmodifymap and check if URI already accessed
-       */
-
-      /*
-      class Proxy{
-        private Hashmap data
-        private UnmodifyableMap returnable
-
-        data == returnable
-
-        public void addToMap(key value){
-          data.put(key, value)
-          unmod = data
-      }
-
-       */
-
       // Sends a request to the API and receives JSON back
       String countyJson = this.cache.search(StateID, countyID);
-      // Map.put(parameters, countyJson);
-
-      String[][] CountyData = CountyDataUtilities.deserializeCounty(countyJson);
-      int x = CountyData.length;
-      int y = CountyData[0].length;
-      String[][] SerializedData = new String[x - 1][y - 2];
-
-      // formats output data
-      for (int i = 0; i < SerializedData.length; i++) {
-        for (int j = 0; j < SerializedData[i].length; j++) {
-          SerializedData[i][j] = CountyData[i + 1][j];
-        }
-      }
-
-      String JsonData = CountyDataUtilities.serializeCounty(SerializedData);
 
       // Adds results to the responseMap
       responseMap.put("result", "success");
       responseMap.put("time retrieved", LocalTime.now());
-      responseMap.put("data", JsonData);
+      // Restore[X]  responseMap.put("data", JsonData);
 
-      //    responseMap.put("activity", activity);
       return responseMap;
+      // return new SuccessResponse(responseMap).serialize(countyJson);
     } catch (Exception e) {
       e.printStackTrace();
 
@@ -204,6 +164,34 @@ public class BroadbandHandler implements Route, Broadband {
         entry[0] = entry[0].replaceAll(" ", "").toLowerCase();
         this.StateMap.put(entry[0], entry[1]);
       }
+    }
+  }
+
+  public record SuccessResponse(String response_type, Map<String, Object> responseMap) {
+
+    public SuccessResponse(Map<String, Object> responseMap) {
+      this("success", responseMap);
+    }
+
+    String serialize(String countyJson) {
+
+      String[][] CountyData = SerializeUtility.deserializeCounty(countyJson);
+
+      int x = CountyData.length;
+      int y = CountyData[0].length;
+      String[][] SerializedData = new String[x - 1][y - 2];
+
+      // formats output data
+      for (int i = 0; i < SerializedData.length; i++) {
+        for (int j = 0; j < SerializedData[i].length; j++) {
+          SerializedData[i][j] = CountyData[i + 1][j];
+        }
+      }
+
+      String JsonData = SerializeUtility.serializeCounty(SerializedData);
+      responseMap.put("data", JsonData);
+
+      return JsonData;
     }
   }
 }

@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
 
-public class CountyDataUtilities {
+public class SerializeUtility {
 
   //  public static String deserializeCounty(String jsonCounty) {
   //

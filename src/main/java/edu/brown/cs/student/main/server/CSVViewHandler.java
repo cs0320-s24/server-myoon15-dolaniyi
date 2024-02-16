@@ -1,7 +1,7 @@
 package edu.brown.cs.student.main.server;
 
 import edu.brown.cs.student.main.search.CSVParser;
-import edu.brown.cs.student.main.utils.CountyDataUtilities;
+import edu.brown.cs.student.main.utils.SerializeUtility;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class CSVViewHandler implements Route {
         arrayOut[i][j] = out.get(i)[j];
       }
     }
-    String JsonSerialized = CountyDataUtilities.serializeCounty(arrayOut);
+    String JsonSerialized = SerializeUtility.serializeCounty(arrayOut);
     //    System.out.println("JSON = " + JsonSerialized);
     responseMap.put("result", "success");
     responseMap.put("data", JsonSerialized);
