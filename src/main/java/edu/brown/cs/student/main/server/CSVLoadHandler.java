@@ -20,7 +20,7 @@ public class CSVLoadHandler implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws FileNotFoundException {
-
+//    System.out.println("handle called");
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
 
