@@ -55,12 +55,11 @@ public class BroadbandHandler implements Route, Broadband {
       }
 
       String JsonData = SerializeUtility.ArrayToJson(SerializedData);
-
+      JsonData = JsonData.replaceAll("\"", "");
+      System.out.println("MAP J: " +  new SuccessResponse(responseMap).serialize());
       responseMap.put("data", JsonData);
       return new SuccessResponse(responseMap).serialize();
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       e.printStackTrace();
       responseMap.put("result", "Exception");
     }

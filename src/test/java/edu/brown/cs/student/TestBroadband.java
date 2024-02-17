@@ -82,7 +82,7 @@ public class TestBroadband {
             .adapter(SuccessResponse.class)
             .fromJson(new Buffer().readFrom(broadConnection.getInputStream()));
 
-    String jsonData = (String)response.getMap().get("data");
+    String jsonData = (String) response.getMap().get("data");
 
     Assert.assertEquals(jsonData, MockBroadbandData.ExpectedData);
 

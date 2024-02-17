@@ -82,15 +82,14 @@ public class TestSearchHandler {
             .adapter(SuccessResponse.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    String dataString = (String)response.getMap().get("data");
-    String resultString = (String)response.getMap().get("result");
+    String dataString = (String) response.getMap().get("data");
+    String resultString = (String) response.getMap().get("result");
 
     // testing length of serialized Json
     Assert.assertEquals(dataString.length(), 406);
     // testing result
     Assert.assertEquals(resultString, "success");
     // testing
-
 
     loadConnection.disconnect();
     searchConnection.disconnect();
@@ -99,7 +98,7 @@ public class TestSearchHandler {
   @Test
   public void existsSpecificColumn() throws IOException {
     HttpURLConnection loadConnection =
-            tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+        tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
     // tests if successful connection
     assertEquals(200, loadConnection.getResponseCode());
     // this calls handle(...) method inside load
@@ -109,12 +108,12 @@ public class TestSearchHandler {
 
     Moshi moshi = new Moshi.Builder().build();
     SuccessResponse response =
-            moshi
-                    .adapter(SuccessResponse.class)
-                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+        moshi
+            .adapter(SuccessResponse.class)
+            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    String dataString = (String)response.getMap().get("data");
-    String resultString = (String)response.getMap().get("result");
+    String dataString = (String) response.getMap().get("data");
+    String resultString = (String) response.getMap().get("result");
 
     // testing length of serialized Json
     Assert.assertEquals(dataString.length(), 406);
@@ -122,15 +121,13 @@ public class TestSearchHandler {
     Assert.assertEquals(resultString, "success");
     // testing
 
-
     loadConnection.disconnect();
     searchConnection.disconnect();
   }
 
   @Test
   public void detectMalformed() throws IOException {
-    HttpURLConnection loadConnection =
-            tryRequest("loadcsv?filepath=data/malformed_signs.csv");
+    HttpURLConnection loadConnection = tryRequest("loadcsv?filepath=data/malformed_signs.csv");
     // tests if successful connection
     assertEquals(200, loadConnection.getResponseCode());
     // this calls handle(...) method inside load
@@ -140,20 +137,19 @@ public class TestSearchHandler {
 
     Moshi moshi = new Moshi.Builder().build();
     SuccessResponse response =
-            moshi
-                    .adapter(SuccessResponse.class)
-                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+        moshi
+            .adapter(SuccessResponse.class)
+            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    String dataString = (String)response.getMap().get("data");
-    String resultString = (String)response.getMap().get("result");
+    String dataString = (String) response.getMap().get("data");
+    String resultString = (String) response.getMap().get("result");
 
     // testing length of serialized Json
-//    Assert.assertEquals(dataString.length(), 406);
+    //    Assert.assertEquals(dataString.length(), 406);
     // testing result
     System.out.println(dataString);
     Assert.assertEquals(resultString, "ill-formed");
     // testing
-
 
     loadConnection.disconnect();
     searchConnection.disconnect();
@@ -162,7 +158,7 @@ public class TestSearchHandler {
   @Test
   public void detectNormalWithCommas() throws IOException {
     HttpURLConnection loadConnection =
-            tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+        tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
     // tests if successful connection
     assertEquals(200, loadConnection.getResponseCode());
     // this calls handle(...) method inside load
@@ -172,23 +168,21 @@ public class TestSearchHandler {
 
     Moshi moshi = new Moshi.Builder().build();
     SuccessResponse response =
-            moshi
-                    .adapter(SuccessResponse.class)
-                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+        moshi
+            .adapter(SuccessResponse.class)
+            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    String dataString = (String)response.getMap().get("data");
-    String resultString = (String)response.getMap().get("result");
+    String dataString = (String) response.getMap().get("data");
+    String resultString = (String) response.getMap().get("result");
 
     // testing length of serialized Json
-//    Assert.assertEquals(dataString.length(), 406);
+    //    Assert.assertEquals(dataString.length(), 406);
     // testing result
-    Assert.assertEquals(resultString, "ill-formed");
+    //    System.out.println(dataString);
+    Assert.assertEquals(resultString, "success");
     // testing
-
 
     loadConnection.disconnect();
     searchConnection.disconnect();
   }
-
-
 }

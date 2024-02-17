@@ -22,7 +22,8 @@ public class CSVParser<T> {
   private ErrorLogger logger;
 
   private boolean malformed = false;
-  static final Pattern regexSplitCSVRow = Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
+  static final Pattern regexSplitCSVRow =
+      Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
 
   /**
    * Constructor
@@ -96,19 +97,20 @@ public class CSVParser<T> {
            */
           String noCommas = "";
           int quoteCount = 0;
-          for (int i=0; i<brRow.length(); i+=1){
+          for (int i = 0; i < brRow.length(); i += 1) {
             // increments quoteCount
             if (brRow.charAt(i) == '\"') {
               quoteCount += 1;
             }
             // if the quotes are open and currently comma
-            if (quoteCount % 2 == 1 && brRow.charAt(i) == ','){
+            if (quoteCount % 2 == 1 && brRow.charAt(i) == ',') {
               continue;
             } else {
-              noCommas += ""+brRow.charAt(i);
+              noCommas += "" + brRow.charAt(i);
             }
           }
           brRow = noCommas.replaceAll("\"", "");
+          System.out.println(brRow);
 
           // stores the number of cols in row for index checking later
           this.numCols = Arrays.asList(regexSplitCSVRow.split(brRow)).size();
@@ -118,19 +120,18 @@ public class CSVParser<T> {
             headerLimit += 1;
           }
 
-
-          String[] row = regexSplitCSVRow.split(brRow);/*.split(",");*/ // array of row
+          String[] row = regexSplitCSVRow.split(brRow); /*.split(",");*/ // array of row
           // stores header length to detect malformed
-          if (headerCount == 0){
+          if (headerCount == 0) {
             staticHeaderLength = row.length;
             headerCount += 1;
           }
 
           // prints malformed rows
-//          if (row.length != staticHeaderLength){
-//            this.malformed = true;
-//            System.out.println("malformed row: "+ Arrays.toString(row));
-//          }
+          //          if (row.length != staticHeaderLength){
+          //            this.malformed = true;
+          //            System.out.println("malformed row: "+ Arrays.toString(row));
+          //          }
 
           // convert to ARRAY OF STRINGS, as type T
           T rowT = creator.create(Arrays.asList(regexSplitCSVRow.split(brRow)));
@@ -186,10 +187,8 @@ public class CSVParser<T> {
     return this.searcher.returnList();
   }
 
-  /**
-   * Returns true if CSV is malformed
-   */
-  public boolean isMalformed(){
+  /** Returns true if CSV is malformed */
+  public boolean isMalformed() {
     return this.malformed;
   }
 }
