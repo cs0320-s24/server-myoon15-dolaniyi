@@ -5,14 +5,11 @@ import static spark.Spark.*;
 
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.*;
-import edu.brown.cs.student.main.utils.APIBroadbandData;
 import edu.brown.cs.student.main.utils.MockBroadbandData;
 import edu.brown.cs.student.main.utils.SerializeUtility;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okio.Buffer;
@@ -20,6 +17,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.Assert;
 import spark.Spark;
 
 public class TestBroadband {
@@ -68,13 +66,14 @@ public class TestBroadband {
   public void testBroadbandWorking() throws IOException {
     HttpURLConnection loadConnection =
         tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+
     // tests if successful connection
     assertEquals(200, loadConnection.getResponseCode());
+
     // this calls handle(...) method inside load
     loadConnection.getInputStream();
 
     HttpURLConnection broadConnection = tryRequest("broadband?state=california&county=031");
-   // System.out.println("broad connection: " + broadConnection.getInputStream());
 
     Moshi moshi = new Moshi.Builder().build();
 
@@ -83,21 +82,9 @@ public class TestBroadband {
             .adapter(SuccessResponse.class)
             .fromJson(new Buffer().readFrom(broadConnection.getInputStream()));
 
-  //  System.out.println("Map Conversion: " + response.getMap().toString());
+    String jsonData = (String)response.getMap().get("data");
 
-    //    Map<String, Object> ret = (Map<String, Object>)searchConnection.getInputStream();
-    //
-    //    System.out.println("size" +ret.size());
-
-    //    String[][] response = SerializeUtility.JsonToArray(new
-    // Buffer().readFrom(searchConnection.getInputStream()));
-
-    //    Moshi moshi = new Moshi.Builder().build();
-    //    String[][] response =
-    //            moshi
-    //                    .adapter(String[][].class)
-    //                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
-    //
+    Assert.assertEquals(jsonData, MockBroadbandData.ExpectedData);
 
     loadConnection.disconnect();
     broadConnection.disconnect();

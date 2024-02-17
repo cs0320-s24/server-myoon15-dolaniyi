@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class CSVParser<T> {
   private final Reader file;
@@ -19,6 +20,9 @@ public class CSVParser<T> {
   private String[] header; // stores header info for col searching
 
   private ErrorLogger logger;
+
+  private boolean malformed = false;
+  static final Pattern regexSplitCSVRow = Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
 
   /**
    * Constructor
@@ -77,22 +81,59 @@ public class CSVParser<T> {
 
   /** Updates this.elts with CSV information */
   public void parseCSV() {
+    // tracks if first row
+    int headerCount = 0;
+    int staticHeaderLength = -1;
+
     try (BufferedReader br = new BufferedReader(this.file)) {
       int headerLimit = 0;
       String brRow;
       while ((brRow = br.readLine()) != null) {
         try {
-          brRow = brRow.replaceAll("\"", "");
+          /*
+           * algorithm: when a quote is open (odd number), removes all commas inside
+           * the element. This fixes erroneous regex splitting
+           */
+          String noCommas = "";
+          int quoteCount = 0;
+          for (int i=0; i<brRow.length(); i+=1){
+            // increments quoteCount
+            if (brRow.charAt(i) == '\"') {
+              quoteCount += 1;
+            }
+            // if the quotes are open and currently comma
+            if (quoteCount % 2 == 1 && brRow.charAt(i) == ','){
+              continue;
+            } else {
+              noCommas += ""+brRow.charAt(i);
+            }
+          }
+          brRow = noCommas.replaceAll("\"", "");
+
           // stores the number of cols in row for index checking later
-          this.numCols = Arrays.asList(brRow.split(",")).size();
+          this.numCols = Arrays.asList(regexSplitCSVRow.split(brRow)).size();
           // stores header as String[] for index calculation
           if (headerLimit == 0) {
-            this.header = brRow.split(",");
+            this.header = regexSplitCSVRow.split(brRow);
             headerLimit += 1;
           }
 
+
+          String[] row = regexSplitCSVRow.split(brRow);/*.split(",");*/ // array of row
+          // stores header length to detect malformed
+          if (headerCount == 0){
+            staticHeaderLength = row.length;
+            headerCount += 1;
+          }
+
+          // prints malformed rows
+//          if (row.length != staticHeaderLength){
+//            this.malformed = true;
+//            System.out.println("malformed row: "+ Arrays.toString(row));
+//          }
+
           // convert to ARRAY OF STRINGS, as type T
-          T rowT = creator.create(Arrays.asList(brRow.split(",")));
+          T rowT = creator.create(Arrays.asList(regexSplitCSVRow.split(brRow)));
           this.elts.add(rowT);
 
         } catch (FactoryFailureException e) {
@@ -143,5 +184,12 @@ public class CSVParser<T> {
   /** Getter method for all matches */
   public List<Coordinate> getMatches() {
     return this.searcher.returnList();
+  }
+
+  /**
+   * Returns true if CSV is malformed
+   */
+  public boolean isMalformed(){
+    return this.malformed;
   }
 }

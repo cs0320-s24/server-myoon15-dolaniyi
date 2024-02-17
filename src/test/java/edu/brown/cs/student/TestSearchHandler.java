@@ -18,6 +18,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.Assert;
 import spark.Spark;
 
 public class TestSearchHandler {
@@ -65,7 +66,7 @@ public class TestSearchHandler {
   }
 
   @Test
-  public void testSearchAnyCol() throws IOException {
+  public void ExistsAnyColumn() throws IOException {
     HttpURLConnection loadConnection =
         tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
     // tests if successful connection
@@ -81,38 +82,113 @@ public class TestSearchHandler {
             .adapter(SuccessResponse.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    //    System.out.println("response = " + response.responseMap().get("data"));
-    //    Object responseMap = response.responseMap().get("data");
-    System.out.println(response.getMap().get("data"));
+    String dataString = (String)response.getMap().get("data");
+    String resultString = (String)response.getMap().get("result");
+
+    // testing length of serialized Json
+    Assert.assertEquals(dataString.length(), 406);
+    // testing result
+    Assert.assertEquals(resultString, "success");
+    // testing
+
 
     loadConnection.disconnect();
     searchConnection.disconnect();
   }
 
   @Test
-  public void testSearchColName() throws IOException {
+  public void existsSpecificColumn() throws IOException {
     HttpURLConnection loadConnection =
-        tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+            tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
     // tests if successful connection
     assertEquals(200, loadConnection.getResponseCode());
     // this calls handle(...) method inside load
     loadConnection.getInputStream();
 
-    HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=1");
+    HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
 
     Moshi moshi = new Moshi.Builder().build();
     SuccessResponse response =
-        moshi
-            .adapter(SuccessResponse.class)
-            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+            moshi
+                    .adapter(SuccessResponse.class)
+                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    //    System.out.println("response = " + response.responseMap().get("data"));
-    //    Object responseMap = response.responseMap().get("data");
-    System.out.println(response.getMap().size());
-    System.out.println(response.getMap());
+    String dataString = (String)response.getMap().get("data");
+    String resultString = (String)response.getMap().get("result");
+
+    // testing length of serialized Json
+    Assert.assertEquals(dataString.length(), 406);
+    // testing result
+    Assert.assertEquals(resultString, "success");
+    // testing
 
 
     loadConnection.disconnect();
     searchConnection.disconnect();
   }
+
+  @Test
+  public void detectMalformed() throws IOException {
+    HttpURLConnection loadConnection =
+            tryRequest("loadcsv?filepath=data/malformed_signs.csv");
+    // tests if successful connection
+    assertEquals(200, loadConnection.getResponseCode());
+    // this calls handle(...) method inside load
+    loadConnection.getInputStream();
+
+    HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
+
+    Moshi moshi = new Moshi.Builder().build();
+    SuccessResponse response =
+            moshi
+                    .adapter(SuccessResponse.class)
+                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+
+    String dataString = (String)response.getMap().get("data");
+    String resultString = (String)response.getMap().get("result");
+
+    // testing length of serialized Json
+//    Assert.assertEquals(dataString.length(), 406);
+    // testing result
+    System.out.println(dataString);
+    Assert.assertEquals(resultString, "ill-formed");
+    // testing
+
+
+    loadConnection.disconnect();
+    searchConnection.disconnect();
+  }
+
+  @Test
+  public void detectNormalWithCommas() throws IOException {
+    HttpURLConnection loadConnection =
+            tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+    // tests if successful connection
+    assertEquals(200, loadConnection.getResponseCode());
+    // this calls handle(...) method inside load
+    loadConnection.getInputStream();
+
+    HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
+
+    Moshi moshi = new Moshi.Builder().build();
+    SuccessResponse response =
+            moshi
+                    .adapter(SuccessResponse.class)
+                    .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+
+    String dataString = (String)response.getMap().get("data");
+    String resultString = (String)response.getMap().get("result");
+
+    // testing length of serialized Json
+//    Assert.assertEquals(dataString.length(), 406);
+    // testing result
+    Assert.assertEquals(resultString, "ill-formed");
+    // testing
+
+
+    loadConnection.disconnect();
+    searchConnection.disconnect();
+  }
+
+
 }

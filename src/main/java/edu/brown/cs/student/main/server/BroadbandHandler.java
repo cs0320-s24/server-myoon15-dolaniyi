@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -26,17 +25,10 @@ public class BroadbandHandler implements Route, Broadband {
   @Override
   public Object handle(Request request, Response response) {
 
-    Set<String> params = request.queryParams();
     String StateID = request.queryParams("state");
     String countyID = request.queryParams("county");
+    if (countyID.equals("")) countyID = "*";
     StateID = StateID.replaceAll(" ", "").toLowerCase();
-
-    //    System.out.println(StateID);
-
-    // variables ? City = SanFran
-    //    for (int i = 0; i < params.size(); i++) {
-    //      System.out.println("Parameter (" + i + "): " + params.toArray()[i].toString());
-    //    }
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
@@ -47,7 +39,7 @@ public class BroadbandHandler implements Route, Broadband {
 
       // Adds results to the responseMap
       responseMap.put("result", "success");
-      responseMap.put("time retrieved", LocalTime.now());
+      responseMap.put("time retrieved", LocalTime.now().toString());
 
       String[][] CountyData = SerializeUtility.JsonToArray(countyJson);
 
@@ -65,52 +57,20 @@ public class BroadbandHandler implements Route, Broadband {
       String JsonData = SerializeUtility.ArrayToJson(SerializedData);
 
       responseMap.put("data", JsonData);
-
       return new SuccessResponse(responseMap).serialize();
-      // return new SuccessResponse(responseMap).serialize(countyJson);
-    } catch (Exception e) {
+    }
+    catch (Exception e)
+    {
       e.printStackTrace();
-
-      // This is a relatively unhelpful exception message. An important part of this sprint will be
-      // in learning to debug correctly by creating your own informative error messages where Spark
-      // falls short.
       responseMap.put("result", "Exception");
     }
-
     return responseMap;
   }
 
   @Override
   public String sendRequest(String stateID, String countyID)
       throws URISyntaxException, IOException, InterruptedException {
-    // Build a request to this BoredAPI. Try out this link in your browser, what do you see?
-    // TODO 1: Looking at the documentation, how can we add to the URI to query based
-    // on participant number?
-
-    //    HttpRequest buildBoredApiRequest =
-    //        HttpRequest.newBuilder()
-    //            .uri(
-    //                new URI(
-    //
-    // "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:"
-    //                        + countyID
-    //                        + "&in=state:"
-    //                        + this.StateMap.get(stateID.trim().toLowerCase())))
-    //            .GET()
-    //            .build();
-    //    // link.gov/...? + variable +"/" + var2
-    //    // localhost/loadcsv?NAME=xxx,COUNTY=xxx
-    //    // convert xxx -> link
-    //
-    //    // Send that API request then store the response in this variable. Note the generic type.
-    //    HttpResponse<String> sentBoredApiResponse =
-    //        HttpClient.newBuilder()
-    //            .build()
-    //            .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
 
     return this.state.requestData(stateID, countyID);
   }
-
-
-
 }
