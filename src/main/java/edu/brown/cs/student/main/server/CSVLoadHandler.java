@@ -35,6 +35,18 @@ public class CSVLoadHandler implements Route {
       ArrayCreator arrCreator = new ArrayCreator();
       this.parser = new CSVParser(f, arrCreator);
 
+      // protects accessible data
+      if (!filepath.startsWith("data/") || !filepath.endsWith(".csv")) {
+        responseMap.put("result", "error_datasource");
+        return new SuccessResponse(responseMap).serialize();
+      }
+      // recognizes malformed CSV
+      if (parser.isMalformed()){
+        responseMap.put("result", "error_bad_json");
+        System.out.println("malformed");
+        return new SuccessResponse(responseMap).serialize();
+      }
+
       responseMap.put("result", "success");
 
     } catch (FileNotFoundException e) {
@@ -42,6 +54,7 @@ public class CSVLoadHandler implements Route {
       //      System.out.println("File not found: " + e.getMessage());
     }
 
-    return responseMap;
+    //    return responseMap;
+    return new SuccessResponse(responseMap).serialize();
   }
 }

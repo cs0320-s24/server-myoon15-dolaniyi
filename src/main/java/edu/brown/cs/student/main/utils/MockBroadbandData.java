@@ -4,7 +4,7 @@ import edu.brown.cs.student.main.interfaces.DataSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class MockBroadbandData implements DataSource {
+public class MockBroadbandData extends DataSource {
 
   private String StaticData =
       "[[\"NAME\",\"S2802_C03_022E\",\"state\",\"county\"],\n"
@@ -14,6 +14,7 @@ public class MockBroadbandData implements DataSource {
   @Override
   public String requestData(String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
+    boolean ValidStateID = super.isValidState(state);
     return StaticData;
   }
 }

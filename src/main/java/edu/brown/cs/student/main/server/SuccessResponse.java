@@ -6,7 +6,7 @@ import java.util.Map;
 
 public record SuccessResponse(String response_type, Map<String, Object> responseMap) {
   public SuccessResponse(Map<String, Object> responseMap) {
-    this("success", responseMap);
+    this("sent", responseMap);
   }
 
   public Map<String, Object> getMap() {

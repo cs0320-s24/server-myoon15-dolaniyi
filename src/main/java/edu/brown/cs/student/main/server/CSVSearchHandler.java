@@ -59,7 +59,7 @@ public class CSVSearchHandler implements Route {
     String JsonSerialized = SerializeUtility.ArrayToJson(arrayOut);
     //    System.out.println("JSON = " + JsonSerialized);
     if (parser.isMalformed()) {
-      responseMap.put("result", "ill-formed");
+      responseMap.put("result", "error_bad_json");
     } else {
       responseMap.put("result", "success");
     }

@@ -110,7 +110,7 @@ public class CSVParser<T> {
             }
           }
           brRow = noCommas.replaceAll("\"", "");
-          System.out.println(brRow);
+          //          System.out.println(brRow);
 
           // stores the number of cols in row for index checking later
           this.numCols = Arrays.asList(regexSplitCSVRow.split(brRow)).size();
@@ -127,11 +127,11 @@ public class CSVParser<T> {
             headerCount += 1;
           }
 
-          // prints malformed rows
-          //          if (row.length != staticHeaderLength){
-          //            this.malformed = true;
-          //            System.out.println("malformed row: "+ Arrays.toString(row));
-          //          }
+          //           prints malformed rows
+          if (row.length != staticHeaderLength) {
+            this.malformed = true;
+            //            System.out.println("malformed row: "+ Arrays.toString(row));
+          }
 
           // convert to ARRAY OF STRINGS, as type T
           T rowT = creator.create(Arrays.asList(regexSplitCSVRow.split(brRow)));

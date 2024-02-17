@@ -43,8 +43,7 @@ public class CSVTest {
                 "2020",
                 "84282",
                 "2629",
-                "\"Newport County",
-                " RI\"",
+                "Newport County RI",
                 "05000US44005",
                 "newport-county-ri"));
     Assert.assertEquals(Arrays.asList(m_data.get(3)), reference);

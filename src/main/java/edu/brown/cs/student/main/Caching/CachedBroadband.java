@@ -10,30 +10,24 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A class that wraps a FileServer instance and caches responses for efficiency. Notice that the
- * interface hasn't changed at all. This is an example of the proxy pattern; callers will interact
- * with the CachedFileServer, rather than the "real" data source.
+ * A class that wraps a BroadbandHandler instance and caches responses for efficiency.
+ * This is an example of the proxy pattern; callers will interact
+ * with the CachedBroadband, rather than the "real" data source.
  *
- * <p>This version uses a Guava cache class to manage the cache.
  */
-public class CachedBroadband /*implements Broadband*/ {
+public class CachedBroadband {
   private final BroadbandHandler wrappedBroadbandHandler;
   private final LoadingCache<String, String> cache;
 
   /**
-   * Proxy class: wrap an instance of Searcher (of any kind) and cache its results.
-   *
-   * <p>There are _many_ ways to implement this! We could use a plain HashMap, but then we'd have to
-   * handle "eviction" ourselves. Lots of libraries exist. We're using Guava here, to demo the
-   * strategy pattern.
-   *
-   * @param toWrap the Searcher to wrap
+   * Proxy class: wrap an instance of BroadbandHandler (of any kind) and cache its results.
+
+   * @param toWrap the BroadbandHandler to wrap
    */
   public CachedBroadband(BroadbandHandler toWrap) {
     this.wrappedBroadbandHandler = toWrap;
 
-    // Look at the docs -- there are lots of builder parameters you can use
-    //   including ones that affect garbage-collection (not needed for Server).
+    //Build the Cache
     this.cache =
         CacheBuilder.newBuilder()
             // How many entries maximum in the cache?
@@ -57,11 +51,16 @@ public class CachedBroadband /*implements Broadband*/ {
                 });
   }
 
+
+    /**
+     * Initiates search on cache
+     * @param stateID stateID to search for
+     * @param countyID countyID to search for
+     * @return
+     */
   public String search(String stateID, String countyID) {
-    // "get" is designed for concurrent situations; for today, use getUnchecked:
+
     String result = cache.getUnchecked(stateID + "," + countyID);
-    // For debugging and demo (would remove in a "real" version):
-    System.out.println(cache.stats());
     return result;
   }
 }
