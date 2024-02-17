@@ -85,12 +85,12 @@ public class TestSearchHandler {
     String dataString = (String) response.getMap().get("data");
     String resultString = (String) response.getMap().get("result");
     String reference =
-        "[[RI,White, $1058.47 ,395773.6521, $1.00 ,75%]," +
-                "[RI,Black, $770.26 ,30424.80376, $0.73 ,6%]," +
-                "[RI,Native American/American Indian, $471.07 ,2315.505646, $0.45 ,0%]," +
-                "[RI,Asian-Pacific Islander, $1080.09 ,18956.71657, $1.02 ,4%]," +
-                "[RI,Hispanic/Latino, $673.14 ,74596.18851, $0.64 ,14%]," +
-                "[RI,Multiracial, $971.89 ,8883.049171, $0.92 ,2%]]";
+        "[[RI,White, $1058.47 ,395773.6521, $1.00 ,75%],"
+            + "[RI,Black, $770.26 ,30424.80376, $0.73 ,6%],"
+            + "[RI,Native American/American Indian, $471.07 ,2315.505646, $0.45 ,0%],"
+            + "[RI,Asian-Pacific Islander, $1080.09 ,18956.71657, $1.02 ,4%],"
+            + "[RI,Hispanic/Latino, $673.14 ,74596.18851, $0.64 ,14%],"
+            + "[RI,Multiracial, $971.89 ,8883.049171, $0.92 ,2%]]";
 
     // testing length of serialized Json
     Assert.assertEquals(dataString, reference);
@@ -128,12 +128,12 @@ public class TestSearchHandler {
     //    System.out.println(dataString);
 
     String reference =
-            "[[RI,White, $1058.47 ,395773.6521, $1.00 ,75%]," +
-                    "[RI,Black, $770.26 ,30424.80376, $0.73 ,6%]," +
-                    "[RI,Native American/American Indian, $471.07 ,2315.505646, $0.45 ,0%]," +
-                    "[RI,Asian-Pacific Islander, $1080.09 ,18956.71657, $1.02 ,4%]," +
-                    "[RI,Hispanic/Latino, $673.14 ,74596.18851, $0.64 ,14%]," +
-                    "[RI,Multiracial, $971.89 ,8883.049171, $0.92 ,2%]]";
+        "[[RI,White, $1058.47 ,395773.6521, $1.00 ,75%],"
+            + "[RI,Black, $770.26 ,30424.80376, $0.73 ,6%],"
+            + "[RI,Native American/American Indian, $471.07 ,2315.505646, $0.45 ,0%],"
+            + "[RI,Asian-Pacific Islander, $1080.09 ,18956.71657, $1.02 ,4%],"
+            + "[RI,Hispanic/Latino, $673.14 ,74596.18851, $0.64 ,14%],"
+            + "[RI,Multiracial, $971.89 ,8883.049171, $0.92 ,2%]]";
 
     // testing length of serialized Json
     Assert.assertEquals(dataString, reference);

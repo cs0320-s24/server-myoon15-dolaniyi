@@ -6,7 +6,6 @@ import com.google.common.cache.LoadingCache;
 import edu.brown.cs.student.main.server.BroadbandHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,7 +43,8 @@ public class CachedBroadband {
                       throws URISyntaxException, IOException, InterruptedException {
                     // If this isn't yet present in the cache, load it:
                     String[] keyValue = key.split(",");
-//                    System.out.println("No data Cached for: " + Arrays.toString(keyValue));
+                    //                    System.out.println("No data Cached for: " +
+                    // Arrays.toString(keyValue));
                     return wrappedBroadbandHandler.sendRequest(keyValue[0], keyValue[1]);
                   }
                 });

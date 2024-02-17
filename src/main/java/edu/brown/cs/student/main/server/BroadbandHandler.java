@@ -54,10 +54,10 @@ public class BroadbandHandler implements Route {
       responseMap.put("result", "Exception: " + InvalidStateError);
     } else */
     if (StateID == null || countyID == null) {
-//      System.out.println("null");
+      //      System.out.println("null");
       responseMap.put("result", "error_bad_request");
     } else if (countyJson == this.state.InvalidCallAPI) {
-//      System.out.println("API FAILED");
+      //      System.out.println("API FAILED");
       responseMap.put("result", "Exception: " + InvalidCallError);
     } else {
       // Adds results to the responseMap
