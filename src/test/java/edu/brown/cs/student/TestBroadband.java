@@ -1,7 +1,5 @@
 package edu.brown.cs.student;
 
-import static spark.Spark.*;
-
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.*;
 import edu.brown.cs.student.main.utils.APIBroadbandData;
@@ -70,32 +68,33 @@ public class TestBroadband {
 
     Moshi moshi = new Moshi.Builder().build();
 
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(broadConnection.getInputStream()));
 
     String jsonData = (String) response.getMap().get("data");
 
-    //    Assert.assertEquals(jsonData, MockBroadbandData.ExpectedData);
+    Assert.assertEquals(jsonData, MockBroadbandData.ExpectedData);
 
     broadConnection.disconnect();
   }
 
   @Test
   public void testInvalidStateID() throws IOException {
+    this.broadbandHandler.SetState(new APIBroadbandData());
     HttpURLConnection broadConnection = tryRequest("broadband?state=newhamptons&county=031");
 
     Moshi moshi = new Moshi.Builder().build();
 
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(broadConnection.getInputStream()));
 
     String result = (String) response.getMap().get("result");
 
-    //    Assert.assertEquals(result, "Exception: " + BroadbandHandler.InvalidStateError);
+    Assert.assertEquals(result, "Exception: " + BroadbandHandler.InvalidCallError);
 
     broadConnection.disconnect();
   }
@@ -107,16 +106,35 @@ public class TestBroadband {
 
     Moshi moshi = new Moshi.Builder().build();
 
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(broadConnection.getInputStream()));
 
     String result = (String) response.getMap().get("result");
-    System.out.println(response.getMap());
 
     Assert.assertEquals(result, "Exception: " + BroadbandHandler.InvalidCallError);
 
     broadConnection.disconnect();
+  }
+
+  @Test
+  public void illformedRequest() throws IOException {
+    HttpURLConnection loadConnection = tryRequest("broadband?WRONG=xyz.csv");
+    // tests if successful connection
+    // this calls handle(...) method inside load
+    loadConnection.getInputStream();
+
+    Moshi moshi = new Moshi.Builder().build();
+    Response response =
+        moshi
+            .adapter(Response.class)
+            .fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+
+    String resultString = (String) response.getMap().get("result");
+
+    Assert.assertEquals(resultString, "error_bad_request");
+
+    loadConnection.disconnect();
   }
 }

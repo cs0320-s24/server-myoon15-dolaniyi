@@ -28,8 +28,6 @@ public class TestSearchHandler {
     Logger.getLogger("").setLevel(Level.WARNING);
   }
 
-  //  private JsonAdapter<String[][]> adapter;
-
   @BeforeEach
   public void setup() {
     // mock CSV parser that holds a filepath
@@ -79,20 +77,20 @@ public class TestSearchHandler {
     HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
     String dataString = (String) response.getMap().get("data");
     String resultString = (String) response.getMap().get("result");
     String reference =
-        "[[\"RI\",\"White\",\" $1058.47 \",\"395773.6521\",\" $1.00 \",\"75%\"],"
-            + "[\"RI\",\"Black\",\" $770.26 \",\"30424.80376\",\" $0.73 \",\"6%\"],"
-            + "[\"RI\",\"Native American/American Indian\",\" $471.07 \",\"2315.505646\",\" $0.45 \",\"0%\"],"
-            + "[\"RI\",\"Asian-Pacific Islander\",\" $1080.09 \",\"18956.71657\",\" $1.02 \",\"4%\"],"
-            + "[\"RI\",\"Hispanic/Latino\",\" $673.14 \",\"74596.18851\",\" $0.64 \",\"14%\"],"
-            + "[\"RI\",\"Multiracial\",\" $971.89 \",\"8883.049171\",\" $0.92 \",\"2%\"]]";
+        "[[RI,White, $1058.47 ,395773.6521, $1.00 ,75%]," +
+                "[RI,Black, $770.26 ,30424.80376, $0.73 ,6%]," +
+                "[RI,Native American/American Indian, $471.07 ,2315.505646, $0.45 ,0%]," +
+                "[RI,Asian-Pacific Islander, $1080.09 ,18956.71657, $1.02 ,4%]," +
+                "[RI,Hispanic/Latino, $673.14 ,74596.18851, $0.64 ,14%]," +
+                "[RI,Multiracial, $971.89 ,8883.049171, $0.92 ,2%]]";
 
     // testing length of serialized Json
     Assert.assertEquals(dataString, reference);
@@ -120,9 +118,9 @@ public class TestSearchHandler {
     HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=0");
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
     String dataString = (String) response.getMap().get("data");
@@ -130,12 +128,12 @@ public class TestSearchHandler {
     //    System.out.println(dataString);
 
     String reference =
-        "[[\"RI\",\"White\",\" $1058.47 \",\"395773.6521\",\" $1.00 \",\"75%\"],"
-            + "[\"RI\",\"Black\",\" $770.26 \",\"30424.80376\",\" $0.73 \",\"6%\"],"
-            + "[\"RI\",\"Native American/American Indian\",\" $471.07 \",\"2315.505646\",\" $0.45 \",\"0%\"],"
-            + "[\"RI\",\"Asian-Pacific Islander\",\" $1080.09 \",\"18956.71657\",\" $1.02 \",\"4%\"],"
-            + "[\"RI\",\"Hispanic/Latino\",\" $673.14 \",\"74596.18851\",\" $0.64 \",\"14%\"],"
-            + "[\"RI\",\"Multiracial\",\" $971.89 \",\"8883.049171\",\" $0.92 \",\"2%\"]]";
+            "[[RI,White, $1058.47 ,395773.6521, $1.00 ,75%]," +
+                    "[RI,Black, $770.26 ,30424.80376, $0.73 ,6%]," +
+                    "[RI,Native American/American Indian, $471.07 ,2315.505646, $0.45 ,0%]," +
+                    "[RI,Asian-Pacific Islander, $1080.09 ,18956.71657, $1.02 ,4%]," +
+                    "[RI,Hispanic/Latino, $673.14 ,74596.18851, $0.64 ,14%]," +
+                    "[RI,Multiracial, $971.89 ,8883.049171, $0.92 ,2%]]";
 
     // testing length of serialized Json
     Assert.assertEquals(dataString, reference);
@@ -166,9 +164,9 @@ public class TestSearchHandler {
         tryRequest("searchcsv?word=DOESNOTEXIST&column=6");
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(allColSearchConnection.getInputStream()));
 
     String dataString = (String) response.getMap().get("data");
@@ -200,19 +198,14 @@ public class TestSearchHandler {
     HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    String dataString = (String) response.getMap().get("data");
     String resultString = (String) response.getMap().get("result");
 
-    // testing length of serialized Json
-    //    Assert.assertEquals(dataString.length(), 406);
-    // testing result
     Assert.assertEquals(resultString, "error_bad_json");
-    // testing
 
     loadConnection.disconnect();
     searchConnection.disconnect();
@@ -235,18 +228,14 @@ public class TestSearchHandler {
     HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
     String dataString = (String) response.getMap().get("data");
     String resultString = (String) response.getMap().get("result");
 
-    // testing length of serialized Json
-    //    Assert.assertEquals(dataString.length(), 406);
-    // testing result
-    //    System.out.println(dataString);
     Assert.assertEquals(resultString, "success");
     // testing
 
@@ -268,23 +257,22 @@ public class TestSearchHandler {
     loadConnection.getInputStream();
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
 
     String resultString = (String) response.getMap().get("result");
-
-    // testing length of serialized Json
-    //    Assert.assertEquals(dataString.length(), 406);
-    // testing result
-    //    System.out.println(dataString);
     Assert.assertEquals(resultString, "error_datasource");
-    // testing
 
     loadConnection.disconnect();
   }
 
+  /**
+   * Tests loading a file that isn't a CSV filetype
+   *
+   * @throws IOException
+   */
   @Test
   public void notCSV() throws IOException {
     HttpURLConnection loadConnection = tryRequest("loadcsv?filepath=data/notCSV.jar");
@@ -294,21 +282,39 @@ public class TestSearchHandler {
     loadConnection.getInputStream();
 
     Moshi moshi = new Moshi.Builder().build();
-    SuccessResponse response =
+    Response response =
         moshi
-            .adapter(SuccessResponse.class)
+            .adapter(Response.class)
             .fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
 
     String resultString = (String) response.getMap().get("result");
-
-    // testing length of serialized Json
-    //    Assert.assertEquals(dataString.length(), 406);
-    // testing result
-    //    System.out.println(dataString);
     Assert.assertEquals(resultString, "error_datasource");
-    // testing
 
     loadConnection.disconnect();
   }
 
+  /**
+   * Tests loading a file that isn't a CSV filetype
+   *
+   * @throws IOException
+   */
+  @Test
+  public void illformedRequest() throws IOException {
+    HttpURLConnection loadConnection = tryRequest("loadcsv?WRONG=xyz.csv");
+    // tests if successful connection
+    // this calls handle(...) method inside load
+    loadConnection.getInputStream();
+
+    Moshi moshi = new Moshi.Builder().build();
+    Response response =
+        moshi
+            .adapter(Response.class)
+            .fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+
+    String resultString = (String) response.getMap().get("result");
+
+    Assert.assertEquals(resultString, "error_bad_request");
+
+    loadConnection.disconnect();
+  }
 }

@@ -34,7 +34,7 @@ public class CSVSearcher {
     switch (this.col) {
         // case when invalid column is provided
       case -2:
-        System.out.println("Error: invalid column");
+//        System.out.println("Error: invalid column");
         this.logger.logError("Error: invalid column");
 
         break;

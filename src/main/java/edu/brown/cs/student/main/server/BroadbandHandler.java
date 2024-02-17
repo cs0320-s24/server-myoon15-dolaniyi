@@ -1,7 +1,6 @@
 package edu.brown.cs.student.main.server;
 
 import edu.brown.cs.student.main.Caching.CachedBroadband;
-import edu.brown.cs.student.main.interfaces.Broadband;
 import edu.brown.cs.student.main.interfaces.DataSource;
 import edu.brown.cs.student.main.utils.SerializeUtility;
 import java.io.IOException;
@@ -9,8 +8,8 @@ import java.net.URISyntaxException;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import spark.Request;
-import spark.Response;
 import spark.Route;
 
 public class BroadbandHandler implements Route {
@@ -31,30 +30,34 @@ public class BroadbandHandler implements Route {
   }
 
   @Override
-  public Object handle(Request request, Response response) {
+  public Object handle(Request request, spark.Response response) {
+    // Creates a hashmap to store the results of the request
+    Map<String, Object> responseMap = new HashMap<>();
 
-//    request.body().contains("state");
+    Set<String> params = request.queryParams();
+    if (!params.contains("state") || !params.contains("county")) {
+      responseMap.put("result", "error_bad_request");
+      return new Response(responseMap).serialize();
+    }
+
+    //    request.body().contains("state");
     String StateID = request.queryParams("state");
     String countyID = request.queryParams("county");
 
-//    if (countyID.equals("")) countyID = "*";
+    //    if (countyID.equals("")) countyID = "*";
     StateID = StateID.replaceAll(" ", "").toLowerCase();
-
-    // Creates a hashmap to store the results of the request
-    Map<String, Object> responseMap = new HashMap<>();
 
     // Sends a request to the API and receives JSON back
     String countyJson = this.cache.search(StateID, countyID);
 
-/*    if (countyJson == this.state.InvalidStateID) {
+    /*    if (countyJson == this.state.InvalidStateID) {
       responseMap.put("result", "Exception: " + InvalidStateError);
     } else */
-    if (StateID == null || countyID == null){
-      System.out.println("null");
+    if (StateID == null || countyID == null) {
+//      System.out.println("null");
       responseMap.put("result", "error_bad_request");
-    }
-    else if (countyJson == this.state.InvalidCallAPI) {
-      System.out.println("API FAILED");
+    } else if (countyJson == this.state.InvalidCallAPI) {
+//      System.out.println("API FAILED");
       responseMap.put("result", "Exception: " + InvalidCallError);
     } else {
       // Adds results to the responseMap
@@ -80,7 +83,7 @@ public class BroadbandHandler implements Route {
       responseMap.put("data", JsonData);
     }
 
-    return new SuccessResponse(responseMap).serialize();
+    return new Response(responseMap).serialize();
     /*   }
     catch (Exception e) {
       e.printStackTrace();
@@ -89,10 +92,9 @@ public class BroadbandHandler implements Route {
     return responseMap;*/
   }
 
-   public String sendRequest(String stateID, String countyID)
+  public String sendRequest(String stateID, String countyID)
       throws URISyntaxException, IOException, InterruptedException {
 
-    if (this.state.isValidState(stateID)) return this.state.requestData(stateID, countyID);
-    else return this.state.InvalidStateID;
+    return this.state.requestData(stateID, countyID);
   }
 }

@@ -10,10 +10,9 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A class that wraps a BroadbandHandler instance and caches responses for efficiency.
- * This is an example of the proxy pattern; callers will interact
- * with the CachedBroadband, rather than the "real" data source.
- *
+ * A class that wraps a BroadbandHandler instance and caches responses for efficiency. This is an
+ * example of the proxy pattern; callers will interact with the CachedBroadband, rather than the
+ * "real" data source.
  */
 public class CachedBroadband {
   private final BroadbandHandler wrappedBroadbandHandler;
@@ -21,13 +20,13 @@ public class CachedBroadband {
 
   /**
    * Proxy class: wrap an instance of BroadbandHandler (of any kind) and cache its results.
-
+   *
    * @param toWrap the BroadbandHandler to wrap
    */
   public CachedBroadband(BroadbandHandler toWrap) {
     this.wrappedBroadbandHandler = toWrap;
 
-    //Build the Cache
+    // Build the Cache
     this.cache =
         CacheBuilder.newBuilder()
             // How many entries maximum in the cache?
@@ -45,19 +44,19 @@ public class CachedBroadband {
                       throws URISyntaxException, IOException, InterruptedException {
                     // If this isn't yet present in the cache, load it:
                     String[] keyValue = key.split(",");
-                    System.out.println("No data Cached for: " + Arrays.toString(keyValue));
+//                    System.out.println("No data Cached for: " + Arrays.toString(keyValue));
                     return wrappedBroadbandHandler.sendRequest(keyValue[0], keyValue[1]);
                   }
                 });
   }
 
-
-    /**
-     * Initiates search on cache
-     * @param stateID stateID to search for
-     * @param countyID countyID to search for
-     * @return
-     */
+  /**
+   * Initiates search on cache
+   *
+   * @param stateID stateID to search for
+   * @param countyID countyID to search for
+   * @return
+   */
   public String search(String stateID, String countyID) {
 
     String result = cache.getUnchecked(stateID + "," + countyID);

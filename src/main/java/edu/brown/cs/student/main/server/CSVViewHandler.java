@@ -9,13 +9,13 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * Displays the loaded parser elements to user. LoadCSV must be called first before this is toggled.
+ */
 public class CSVViewHandler implements Route {
   CSVLoadHandler loadHandler;
-  List<String[]> elts;
 
   public CSVViewHandler(CSVLoadHandler loader) {
-    // this.parser = parser;
-    // this.elts = parser.getElts();
     this.loadHandler = loader;
   }
 
@@ -40,7 +40,7 @@ public class CSVViewHandler implements Route {
       }
     }
     String JsonSerialized = SerializeUtility.ArrayToJson(arrayOut);
-    //    System.out.println("JSON = " + JsonSerialized);
+
     responseMap.put("result", "success");
     responseMap.put("data", JsonSerialized);
 

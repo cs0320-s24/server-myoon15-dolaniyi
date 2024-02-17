@@ -2,30 +2,27 @@ package edu.brown.cs.student.main.interfaces;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 
+/** Abstract interface for the MockBroadBandData source and the APIBroadBandData. */
+public interface DataSource {
 
-/**
- * Abstract super class for ock
- */
-public abstract class DataSource {
-
-  protected HashMap<String, String> StateMap;
-  public final String InvalidStateID = "[INVALID STATE]";
+  // protected HashMap<String, String> StateMap;
   public final String InvalidCallAPI = "[INVALID CALL]";
 
-  public abstract String requestData(String state, String county)
+  /**
+   * @param state Desired state specified by user
+   * @param county Desired county specified by user
+   * @return The data received after building and sending the query
+   * @throws URISyntaxException
+   * @throws IOException
+   * @throws InterruptedException
+   */
+  public String requestData(String state, String county)
       throws URISyntaxException, IOException, InterruptedException;
 
-  public boolean isValidState(String state) {
-
-    return true;
-    //  return this.StateMap.containsKey(state);
-  }
-
-  public DataSource() {
+  /*public DataSource() {
     // InitializeStateMap();
-  }
+  }*/
 
   /*
     private void InitializeStateMap() {

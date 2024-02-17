@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import spark.Request;
-import spark.Response;
 import spark.Route;
 
+/**
+ * SearchHandler for searching the parser's results after the loadhandler is called. Uses parameters
+ * specified by user to identify which segments of data to return
+ */
 public class CSVSearchHandler implements Route {
   CSVLoadHandler loadHandler;
 
@@ -20,11 +23,17 @@ public class CSVSearchHandler implements Route {
   }
 
   @Override
-  public Object handle(Request request, Response response) throws Exception {
+  public Object handle(Request request, spark.Response response) throws Exception {
 
     Map<String, Object> responseMap = new HashMap<>();
 
+    // checks if filepath is actually a param
     Set<String> params = request.queryParams();
+    if (!params.contains("word") || !params.contains("column")) {
+      responseMap.put("result", "error_bad_request");
+      return new Response(responseMap).serialize();
+    }
+
     String word = request.queryParams("word");
     String col = request.queryParams("column");
 
@@ -34,30 +43,23 @@ public class CSVSearchHandler implements Route {
       responseMap.put("result", "CSV not loaded");
       return responseMap;
     }
+    if (word == null || col == null) {
+      responseMap.put("result", "error_bad_request");
+      return new Response(responseMap).serialize();
+    }
     List<String[]> elements = parser.getElts();
     CSVSearcher searcher = parser.searchCSV(word, col);
     List<Coordinate> matches = searcher.returnList();
     String[][] arrayOut = new String[matches.size()][elements.get(0).length];
 
+    // Cycles through match list
     for (int i = 0; i < matches.size(); i += 1) {
       int row = matches.get(i).getRow();
       arrayOut[i] = elements.get(row);
-
-      /*  for (int j = 0; j < elements.size(); j++) {
-          int row = matches.get(i).getRow();
-          int col = matches.get(i).getCol();
-
-          arrayOut[i][j] = elements.get(row)[col];
-      }*/
     }
 
-    //        for (int i = 0; i < out.size(); i += 1) {
-    //            for (int j = 0; j < out.get(0).length; j += 1) {
-    //                arrayOut[i][j] = out.get(i)[j];
-    //            }
-    //        }
     String JsonSerialized = SerializeUtility.ArrayToJson(arrayOut);
-    //    System.out.println("JSON = " + JsonSerialized);
+    JsonSerialized = JsonSerialized.replaceAll("\"", "");
     if (parser.isMalformed()) {
       responseMap.put("result", "error_bad_json");
     } else {
@@ -65,7 +67,6 @@ public class CSVSearchHandler implements Route {
     }
     responseMap.put("data", JsonSerialized);
 
-    //  return responseMap;
-    return new SuccessResponse(responseMap).serialize();
+    return new Response(responseMap).serialize();
   }
 }

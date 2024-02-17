@@ -76,7 +76,7 @@ public class CSVParser<T> {
     //      out[i][1] = elements.get(y).toString();
     //
     //    }
-
+//    System.out.println(this.interpretCol(col));
     return new CSVSearcher(this.elts, word, this.interpretCol(col));
   }
 
@@ -139,12 +139,12 @@ public class CSVParser<T> {
 
         } catch (FactoryFailureException e) {
           // creator can't create T
-          System.out.println("Error creating row: " + e.getMessage());
+//          System.out.println("Error creating row: " + e.getMessage());
           this.logger.logError("Error creating row: " + e.getMessage());
         }
       }
     } catch (IOException e) {
-      System.out.println("Error reading file: " + e.getMessage());
+//      System.out.println("Error reading file: " + e.getMessage());
       this.logger.logError("Error reading file: " + e.getMessage());
     }
   }

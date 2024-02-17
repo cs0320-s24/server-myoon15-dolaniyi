@@ -8,11 +8,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class APIBroadbandData extends DataSource {
-
-  public APIBroadbandData() {
-    super();
-  }
+/** A datasource that actually connect the BroadbandHandler with an API call. */
+public class APIBroadbandData implements DataSource {
 
   @Override
   public String requestData(String stateID, String countyID)
@@ -28,9 +25,6 @@ public class APIBroadbandData extends DataSource {
                         + /*super.StateMap.get(*/ stateID.trim().toLowerCase()) /*)*/)
             .GET()
             .build();
-    // link.gov/...? + variable +"/" + var2
-    // localhost/loadcsv?NAME=xxx,COUNTY=xxx
-    // convert xxx -> link
 
     // Send that API request then store the response in this variable. Note the generic type.
     HttpResponse<String> sentBoredApiResponse =
@@ -38,9 +32,9 @@ public class APIBroadbandData extends DataSource {
             .build()
             .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
 
-    System.out.println("data - > " + sentBoredApiResponse.body());
+    // if the response if empty, return error
     if (sentBoredApiResponse.body().equals("")) {
-      return super.InvalidCallAPI;
+      return InvalidCallAPI;
     }
     return sentBoredApiResponse.body();
   }
