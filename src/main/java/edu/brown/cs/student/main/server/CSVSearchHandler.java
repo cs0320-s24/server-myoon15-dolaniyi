@@ -28,9 +28,6 @@ public class CSVSearchHandler implements Route {
     String word = request.queryParams("word");
     String col = request.queryParams("column");
 
-    System.out.println("word: " + word);
-    System.out.println("col: " + col);
-
     CSVParser parser = this.loadHandler.GetParser();
 
     if (parser == null) {
@@ -60,11 +57,11 @@ public class CSVSearchHandler implements Route {
     //            }
     //        }
     String JsonSerialized = SerializeUtility.ArrayToJson(arrayOut);
-    System.out.println("JSON = " + JsonSerialized);
+    //    System.out.println("JSON = " + JsonSerialized);
     responseMap.put("result", "success");
     responseMap.put("data", JsonSerialized);
 
     //  return responseMap;
-    return new SearchSuccess(responseMap).serialize();
+    return new SuccessResponse(responseMap).serialize();
   }
 }

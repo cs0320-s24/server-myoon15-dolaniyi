@@ -4,16 +4,20 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import java.util.Map;
 
-public record SearchSuccess(String response_type, Map<String, Object> responseMap) {
-  public SearchSuccess(Map<String, Object> responseMap) {
+public record SuccessResponse(String response_type, Map<String, Object> responseMap) {
+  public SuccessResponse(Map<String, Object> responseMap) {
     this("success", responseMap);
+  }
+
+  public Map<String, Object> getMap() {
+    return responseMap;
   }
 
   String serialize() {
     try {
       // Initialize Moshi which takes in this class and returns it as JSON!
       Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<SearchSuccess> adapter = moshi.adapter(SearchSuccess.class);
+      JsonAdapter<SuccessResponse> adapter = moshi.adapter(SuccessResponse.class);
       return adapter.toJson(this);
     } catch (Exception e) {
       // For debugging purposes, show in the console _why_ this fails

@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.utils.APIBroadbandData;
 import spark.Spark;
 
 /**
@@ -65,7 +66,7 @@ public class Server {
     Spark.get("viewcsv", new CSVViewHandler(load));
     Spark.get("searchcsv", new CSVSearchHandler(load));
 
-    Spark.get("broadband", new BroadbandHandler());
+    Spark.get("broadband", new BroadbandHandler(new APIBroadbandData()));
 
     Spark.init();
     Spark.awaitInitialization();

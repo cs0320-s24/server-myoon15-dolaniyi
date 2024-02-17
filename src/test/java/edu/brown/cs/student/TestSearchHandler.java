@@ -6,7 +6,7 @@ import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.server.CSVLoadHandler;
 import edu.brown.cs.student.main.server.CSVSearchHandler;
 import edu.brown.cs.student.main.server.CSVViewHandler;
-import edu.brown.cs.student.main.server.SearchSuccess;
+import edu.brown.cs.student.main.server.SuccessResponse;
 import edu.brown.cs.student.main.utils.SerializeUtility;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -65,7 +65,7 @@ public class TestSearchHandler {
   }
 
   @Test
-  public void testSearchWorking() throws IOException {
+  public void testSearchAnyCol() throws IOException {
     HttpURLConnection loadConnection =
         tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
     // tests if successful connection
@@ -76,12 +76,41 @@ public class TestSearchHandler {
     HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=");
 
     Moshi moshi = new Moshi.Builder().build();
-    SearchSuccess response =
+    SuccessResponse response =
         moshi
-            .adapter(SearchSuccess.class)
+            .adapter(SuccessResponse.class)
             .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
 
-    System.out.println("response = " + response.responseMap().get("data"));
+    //    System.out.println("response = " + response.responseMap().get("data"));
+    //    Object responseMap = response.responseMap().get("data");
+    System.out.println(response.getMap().get("data"));
+
+    loadConnection.disconnect();
+    searchConnection.disconnect();
+  }
+
+  @Test
+  public void testSearchColName() throws IOException {
+    HttpURLConnection loadConnection =
+        tryRequest("loadcsv?filepath=data/dol_ri_earnings_disparity.csv");
+    // tests if successful connection
+    assertEquals(200, loadConnection.getResponseCode());
+    // this calls handle(...) method inside load
+    loadConnection.getInputStream();
+
+    HttpURLConnection searchConnection = tryRequest("searchcsv?word=ri&column=1");
+
+    Moshi moshi = new Moshi.Builder().build();
+    SuccessResponse response =
+        moshi
+            .adapter(SuccessResponse.class)
+            .fromJson(new Buffer().readFrom(searchConnection.getInputStream()));
+
+    //    System.out.println("response = " + response.responseMap().get("data"));
+    //    Object responseMap = response.responseMap().get("data");
+    System.out.println(response.getMap().size());
+    System.out.println(response.getMap());
+
 
     loadConnection.disconnect();
     searchConnection.disconnect();
